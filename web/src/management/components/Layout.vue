@@ -348,6 +348,19 @@ export default {
     )
 
     return {
+      // 图标
+      Expand,
+      ArrowDown,
+      User,
+      Setting,
+      SwitchButton,
+      DataAnalysis,
+      UserFilled,
+      Document,
+      Collection,
+      Connection,
+      PieChart,
+      // 状态和方法
       sidebarCollapsed,
       changePasswordVisible,
       changePasswordLoading,

@@ -67,22 +67,44 @@ export class PatientService {
    * 分页查询患者列表
    */
   async findAll(queryDto: QueryPatientDto) {
-    const { page = 1, limit = 10, name, phone, idCard, status, gender } = queryDto;
+    const { page = 1, limit = 10, name, phone, idCard, status, gender, department } = queryDto;
     const skip = (page - 1) * limit;
 
-    // 构建查询条件
+    // 构建查询条件 - 使用MongoDB原生查询支持模糊搜索
     const where: any = {};
 
-    // 简化查询，暂时移除正则表达式
+    // 状态筛选
     if (status) {
       where.status = status;
     }
 
+    // 性别筛选
     if (gender) {
       where.gender = gender;
     }
 
-    // 注意：需要实现前端搜索逻辑或使用原生的MongoDB查询
+    // 科室筛选
+    if (department) {
+      where.department = department;
+    }
+
+    // 姓名模糊搜索
+    if (name) {
+      where.name = { $regex: name, $options: 'i' };
+    }
+
+    // 手机号模糊搜索
+    if (phone) {
+      where.phone = { $regex: phone, $options: 'i' };
+    }
+
+    // 身份证号模糊搜索
+    if (idCard) {
+      where.idCard = { $regex: idCard, $options: 'i' };
+    }
+
+    // 排除已软删除的记录
+    where.deletedAt = { $exists: false };
 
     const [patients, total] = await Promise.all([
       this.patientRepository.find({
@@ -171,7 +193,7 @@ export class PatientService {
   /**
    * 删除患者（软删除）
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string, deletedBy?: string): Promise<void> {
     Logger.info(`删除患者: ID ${id}`);
 
     const patient = await this.findById(id);
@@ -183,8 +205,37 @@ export class PatientService {
     //   throw new BadRequestException('该患者有关联的病历记录，无法删除');
     // }
 
-    await this.patientRepository.remove(patient);
-    Logger.info(`患者删除成功: ${patient.name} (ID: ${id})`);
+    // 执行软删除
+    patient.deletedAt = new Date();
+    patient.deletedBy = deletedBy;
+    await this.patientRepository.save(patient);
+
+    Logger.info(`患者软删除成功: ${patient.name} (ID: ${id})`);
+  }
+
+  /**
+   * 更新患者状态
+   */
+  async updateStatus(id: string, statusDto: any): Promise<Patient> {
+    Logger.info(`更新患者状态: ID ${id} -> ${statusDto.status}`);
+
+    const patient = await this.findById(id);
+
+    // 如果状态改为已故，必须有死亡时间
+    if (statusDto.status === 'deceased' && !statusDto.deathDate) {
+      throw new BadRequestException('状态为已故时必须提供死亡时间');
+    }
+
+    patient.status = statusDto.status;
+    if (statusDto.deathDate) {
+      patient.deathDate = new Date(statusDto.deathDate);
+    } else if (statusDto.status !== 'deceased') {
+      patient.deathDate = undefined;
+    }
+
+    const updatedPatient = await this.patientRepository.save(patient);
+    Logger.info(`患者状态更新成功: ${updatedPatient.name} -> ${statusDto.status}`);
+    return updatedPatient;
   }
 
   /**
@@ -206,9 +257,11 @@ export class PatientService {
    * 根据手机号查找患者
    */
   async findByPhone(phone: string): Promise<Patient[]> {
-    // 暂时使用简单匹配，后续可以实现更复杂的搜索逻辑
     return this.patientRepository.find({
-      where: { phone },
+      where: {
+        phone: { $regex: phone, $options: 'i' },
+        deletedAt: { $exists: false }
+      },
       order: { createdAt: 'DESC' },
     });
   }
@@ -217,9 +270,11 @@ export class PatientService {
    * 根据姓名查找患者
    */
   async findByName(name: string): Promise<Patient[]> {
-    // 暂时使用简单匹配，后续可以实现更复杂的搜索逻辑
     return this.patientRepository.find({
-      where: { name },
+      where: {
+        name: { $regex: name, $options: 'i' },
+        deletedAt: { $exists: false }
+      },
       order: { createdAt: 'DESC' },
     });
   }

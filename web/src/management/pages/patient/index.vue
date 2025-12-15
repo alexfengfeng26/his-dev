@@ -602,8 +602,8 @@ export default {
         const response = await patientService.getPatients(queryParams)
 
         // 更新数据
-        patientList.value = response.data.patients
-        pagination.total = response.data.total
+        patientList.value = response.patients
+        pagination.total = response.total
 
       } catch (error) {
         console.error('获取患者列表失败:', error)

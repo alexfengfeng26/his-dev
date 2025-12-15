@@ -104,49 +104,49 @@ export const patientService = {
   // 获取患者列表
   async getPatients(query: QueryPatientDto = {}): Promise<PatientListResponse> {
     const response = await api.get('/patients', { params: query })
-    return response
+    return response.data
   },
 
   // 获取患者统计信息
   async getStatistics(): Promise<PatientStatistics> {
     const response = await api.get('/patients/statistics')
-    return response
+    return response.data
   },
 
   // 根据ID获取患者
   async getPatientById(id: string): Promise<Patient> {
     const response = await api.get(`/patients/${id}`)
-    return response
+    return response.data
   },
 
   // 根据身份证号获取患者
   async getPatientByIdCard(idCard: string): Promise<Patient> {
     const response = await api.get(`/patients/idcard/${idCard}`)
-    return response
+    return response.data
   },
 
   // 根据手机号获取患者列表
   async getPatientsByPhone(phone: string): Promise<Patient[]> {
     const response = await api.get(`/patients/phone/${phone}`)
-    return response
+    return response.data
   },
 
   // 根据姓名获取患者列表
   async getPatientsByName(name: string): Promise<Patient[]> {
     const response = await api.get(`/patients/name/${name}`)
-    return response
+    return response.data
   },
 
   // 创建患者
   async createPatient(data: CreatePatientDto): Promise<Patient> {
     const response = await api.post('/patients', data)
-    return response
+    return response.data
   },
 
   // 更新患者信息
   async updatePatient(id: string, data: UpdatePatientDto): Promise<Patient> {
     const response = await api.patch(`/patients/${id}`, data)
-    return response
+    return response.data
   },
 
   // 删除患者

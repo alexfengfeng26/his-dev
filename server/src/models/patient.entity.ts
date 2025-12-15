@@ -47,6 +47,10 @@ export class Patient {
   @Column({ nullable: true })
   occupation?: string;
 
+  @ApiProperty({ description: '科室' })
+  @Column({ nullable: true })
+  department?: string;
+
   @ApiProperty({ description: '血型：A、B、AB、O、unknown' })
   @Column({ default: 'unknown' })
   bloodType: 'A' | 'B' | 'AB' | 'O' | 'unknown';
@@ -86,6 +90,14 @@ export class Patient {
   @ApiProperty({ description: '创建医生ID' })
   @Column()
   createdBy: string;
+
+  @ApiProperty({ description: '软删除时间' })
+  @Column({ nullable: true })
+  deletedAt?: Date;
+
+  @ApiProperty({ description: '删除操作人ID' })
+  @Column({ nullable: true })
+  deletedBy?: string;
 
   @ApiProperty({ description: '创建时间' })
   @CreateDateColumn()

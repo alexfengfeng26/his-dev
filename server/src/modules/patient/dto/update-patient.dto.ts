@@ -43,6 +43,11 @@ export class UpdatePatientDto {
   @IsString()
   occupation?: string;
 
+  @ApiProperty({ description: '科室', required: false })
+  @IsOptional()
+  @IsString()
+  department?: string;
+
   @ApiProperty({ description: '血型：A、B、AB、O、unknown', enum: ['A', 'B', 'AB', 'O', 'unknown'], required: false })
   @IsOptional()
   @IsEnum(['A', 'B', 'AB', 'O', 'unknown'])
@@ -127,4 +132,9 @@ export class QueryPatientDto {
   @IsOptional()
   @IsEnum(['male', 'female', 'unknown'])
   gender?: 'male' | 'female' | 'unknown';
+
+  @ApiProperty({ description: '科室筛选', required: false })
+  @IsOptional()
+  @IsString()
+  department?: string;
 }
