@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIS-DEV 认证测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 4px;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 HIS-DEV 认证系统测试</h1>
+        <p>这是一个简单的测试页面，用于验证前后端认证集成。</p>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" value="testuser" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" value="Test123!@#" required>
+            </div>
+            <button type="submit" id="loginBtn">登录测试</button>
+        </form>
+
+        <div id="message"></div>
+
+        <div class="test-info">
+            <h3>📋 测试信息:</h3>
+            <p><strong>测试用户:</strong> testuser</p>
+            <p><strong>测试密码:</strong> Test123!@#</p>
+            <p><strong>后端API:</strong> http://localhost:3000</p>
+        </div>
+
+        <div class="status" id="status">
+            <h3>🔍 系统状态:</h3>
+            <p>正在检查...</p>
+        </div>
+    </div>
+
+    <script>
+        // 检查后端服务状态
+        async function checkBackendStatus() {
+            try {
+                const response = await fetch('http://localhost:3000/api')
+                const statusDiv = document.getElementById('status')
+
+                if (response.ok) {
+                    statusDiv.innerHTML = '<h3>🔍 系统状态:</h3><p>✅ 后端服务正常运行</p><p>📍 Swagger文档: <a href="http://localhost:3000/api" target="_blank">http://localhost:3000/api</a></p>'
+                } else {
+                    statusDiv.innerHTML = '<h3>🔍 系统状态:</h3><p>❌ 后端服务响应异常</p>'
+                }
+            } catch (error) {
+                const statusDiv = document.getElementById('status')
+                statusDiv.innerHTML = '<h3>🔍 系统状态:</h3><p>❌ 无法连接到后端服务</p><p>请确保后端服务正在运行 (http://localhost:3000)</p>'
+            }
+        }
+
+        // 处理登录
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
+
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+            const loginBtn = document.getElementById('loginBtn')
+            const messageDiv = document.getElementById('message')
+
+            loginBtn.disabled = true
+            loginBtn.textContent = '登录中...'
+            messageDiv.innerHTML = ''
+
+            try {
+                const response = await fetch('http://localhost:3000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                })
+
+                const data = await response.json()
+
+                if (response.ok) {
+                    messageDiv.className = 'message success'
+                    messageDiv.innerHTML = `
+                        <h3>✅ 登录成功!</h3>
+                        <p><strong>用户:</strong> ${data.user.username}</p>
+                        <p><strong>Token:</strong> ${data.token.substring(0, 50)}...</p>
+                        <p><strong>过期时间:</strong> ${data.expiresIn}</p>
+                        <p>✅ JWT认证系统正常工作!</p>
+                    `
+
+                    // 测试认证API
+                    await testAuthAPI(data.token)
+                } else {
+                    messageDiv.className = 'message error'
+                    messageDiv.innerHTML = `<h3>❌ 登录失败</h3><p>${data.message || '未知错误'}</p>`
+                }
+            } catch (error) {
+                messageDiv.className = 'message error'
+                messageDiv.innerHTML = `<h3>❌ 网络错误</h3><p>${error.message}</p>`
+            } finally {
+                loginBtn.disabled = false
+                loginBtn.textContent = '登录测试'
+            }
+        })
+
+        // 测试需要认证的API
+        async function testAuthAPI(token) {
+            try {
+                const response = await fetch('http://localhost:3000/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+
+                const data = await response.json()
+
+                if (response.ok) {
+                    const messageDiv = document.getElementById('message')
+                    messageDiv.innerHTML += `
+                        <div style="margin-top: 20px; padding: 15px; background: #e8f5e8; border-radius: 4px;">
+                            <h3>🔐 认证API测试</h3>
+                            <p>✅ JWT Token验证成功</p>
+                            <p>✅ 用户信息获取正常</p>
+                            <p><strong>用户ID:</strong> ${data.user.sub}</p>
+                            <p><strong>用户名:</strong> ${data.user.username}</p>
+                        </div>
+                    `
+                } else {
+                    throw new Error(data.message || '认证API调用失败')
+                }
+            } catch (error) {
+                console.error('认证API测试失败:', error)
+            }
+        }
+
+        // 页面加载时检查状态
+        checkBackendStatus()
+    </script>
+</body>
+</html>

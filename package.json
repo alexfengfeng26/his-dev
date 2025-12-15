@@ -1,0 +1,47 @@
+{
+  "name": "his-dev",
+  "version": "1.0.0",
+  "description": "电子病历系统底层框架",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../web && npm install",
+    "dev:server": "cd server && npm run dev",
+    "dev:web": "cd web && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:web\"",
+    "build:server": "cd server && npm run build",
+    "build:web": "cd web && npm run build",
+    "build": "npm run build:server && npm run build:web",
+    "test:server": "cd server && npm test",
+    "test:web": "cd web && npm test",
+    "test": "npm run test:server && npm run test:web",
+    "lint": "npm run lint:server && npm run lint:web",
+    "lint:server": "cd server && npm run lint",
+    "lint:web": "cd web && npm run lint"
+  },
+  "keywords": [
+    "his",
+    "emr",
+    "electron-medical-record",
+    "vue3",
+    "nestjs",
+    "typescript",
+    "mongodb"
+  ],
+  "author": "HIS-DEV Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/his-dev.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/his-dev/issues"
+  },
+  "homepage": "https://github.com/your-username/his-dev#readme"
+}
