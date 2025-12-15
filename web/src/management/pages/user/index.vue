@@ -327,6 +327,7 @@ import {
   Delete,
   Key
 } from '@element-plus/icons-vue'
+import { userService } from '../../services/user'
 
 export default {
   name: 'UserManagement',
@@ -445,87 +446,28 @@ export default {
     const fetchUserList = async () => {
       loading.value = true
       try {
-        // 这里应该调用真实的API
-        // 暂时使用模拟数据
-        await new Promise(resolve => setTimeout(resolve, 800))
-
-        // 模拟数据
-        const mockData = [
-          {
-            id: 1,
-            username: 'admin',
-            realName: '系统管理员',
-            email: 'admin@his-dev.com',
-            phone: '13800138000',
-            role: 'admin',
-            department: '系统管理部',
-            status: true,
-            lastLoginTime: '2024-01-15T10:30:00',
-            createdAt: '2024-01-01T00:00:00',
-            remark: '系统超级管理员'
-          },
-          {
-            id: 2,
-            username: 'doctor001',
-            realName: '张医生',
-            email: 'zhang@his-dev.com',
-            phone: '13800138001',
-            role: 'doctor',
-            department: '内科',
-            status: true,
-            lastLoginTime: '2024-01-15T09:15:00',
-            createdAt: '2024-01-02T00:00:00',
-            remark: '主治医师'
-          },
-          {
-            id: 3,
-            username: 'nurse001',
-            realName: '李护士',
-            email: 'li@his-dev.com',
-            phone: '13800138002',
-            role: 'nurse',
-            department: '内科',
-            status: true,
-            lastLoginTime: '2024-01-15T08:45:00',
-            createdAt: '2024-01-03T00:00:00',
-            remark: '注册护士'
-          },
-          {
-            id: 4,
-            username: 'tech001',
-            realName: '王技师',
-            email: 'wang@his-dev.com',
-            phone: '13800138003',
-            role: 'technician',
-            department: '检验科',
-            status: false,
-            lastLoginTime: '2024-01-14T16:20:00',
-            createdAt: '2024-01-04T00:00:00',
-            remark: '检验技师'
-          }
-        ]
-
-        // 过滤数据
-        let filteredData = mockData
-        if (searchForm.username) {
-          filteredData = filteredData.filter(user =>
-            user.username.toLowerCase().includes(searchForm.username.toLowerCase()) ||
-            user.realName.includes(searchForm.username)
-          )
-        }
-        if (searchForm.role) {
-          filteredData = filteredData.filter(user => user.role === searchForm.role)
-        }
-        if (searchForm.status !== null) {
-          filteredData = filteredData.filter(user => user.status === searchForm.status)
+        // 构建查询参数
+        const queryParams = {
+          page: pagination.page,
+          limit: pagination.size,
+          username: searchForm.username || undefined,
+          status: searchForm.status !== null ? (searchForm.status ? 'active' : 'inactive') : undefined
         }
 
-        pagination.total = filteredData.length
+        // 调用真实API
+        const response = await userService.getUsers(queryParams)
 
-        // 分页
-        const start = (pagination.page - 1) * pagination.size
-        const end = start + pagination.size
-        userList.value = filteredData.slice(start, end)
+        // 更新数据
+        userList.value = response.data.users.map(user => ({
+          ...user,
+          id: user._id,
+          role: user.roleIds && user.roleIds.length > 0 ? 'admin' : 'user', // 简化角色映射
+          department: user.departmentId || '未分配', // 简化科室显示
+          status: user.status === 'active', // 转换为布尔值
+          lastLoginTime: user.lastLoginAt, // 字段映射
+          remark: '' // 后端暂无此字段
+        }))
+        pagination.total = response.data.total
 
       } catch (error) {
         console.error('获取用户列表失败:', error)
@@ -597,8 +539,8 @@ export default {
           }
         )
 
-        // 这里应该调用删除API
-        await new Promise(resolve => setTimeout(resolve, 500))
+        // 调用删除API
+        await userService.deleteUser(row._id || row.id)
 
         ElMessage.success('删除成功')
         fetchUserList()
@@ -629,8 +571,8 @@ export default {
           }
         )
 
-        // 这里应该调用重置密码API
-        await new Promise(resolve => setTimeout(resolve, 500))
+        // 调用重置密码API
+        await userService.resetPassword(row._id || row.id, newPassword)
 
         ElMessage.success('密码重置成功')
       } catch (error) {
@@ -654,8 +596,28 @@ export default {
         await formRef.value.validate()
         submitLoading.value = true
 
-        // 这里应该调用保存API
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        if (isEdit.value) {
+          // 更新用户
+          const updateData = {
+            realName: form.realName,
+            email: form.email,
+            phone: form.phone,
+            status: form.status ? 'active' : 'inactive',
+            isSuperAdmin: form.role === 'admin'
+          }
+          await userService.updateUser(form.id, updateData)
+        } else {
+          // 创建用户
+          const createData = {
+            username: form.username,
+            password: form.password,
+            realName: form.realName,
+            email: form.email,
+            phone: form.phone,
+            isSuperAdmin: form.role === 'admin'
+          }
+          await userService.createUser(createData)
+        }
 
         ElMessage.success(isEdit.value ? '更新成功' : '创建成功')
         dialogVisible.value = false

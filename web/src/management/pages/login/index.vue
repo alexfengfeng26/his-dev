@@ -18,8 +18,8 @@
       {{ message }}
     </div>
     <div class="test-info">
-      <p>测试用户: testuser</p>
-      <p>测试密码: Test123!@#</p>
+      <p>测试用户: admin</p>
+      <p>测试密码: Admin123!</p>
     </div>
   </div>
 </template>
@@ -27,13 +27,16 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../stores'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: 'SimpleLogin',
   setup() {
     const router = useRouter()
-    const username = ref('testuser')
-    const password = ref('Test123!@#')
+    const authStore = useAuthStore()
+    const username = ref('admin')
+    const password = ref('Admin123!')
     const loading = ref(false)
     const message = ref('')
     const messageType = ref('')
@@ -43,38 +46,23 @@ export default {
       message.value = ''
 
       try {
-        const response = await fetch('http://localhost:3000/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            username: username.value,
-            password: password.value
-          })
+        await authStore.login({
+          username: username.value,
+          password: password.value
         })
 
-        const data = await response.json()
+        message.value = '登录成功！正在跳转...'
+        messageType.value = 'success'
+        ElMessage.success('登录成功')
 
-        if (response.ok) {
-          // 保存认证信息
-          localStorage.setItem('token', data.token)
-          localStorage.setItem('user', JSON.stringify(data.user))
-
-          message.value = '登录成功！正在跳转...'
-          messageType.value = 'success'
-
-          setTimeout(() => {
-            router.push('/dashboard')
-          }, 1000)
-        } else {
-          message.value = data.message || '登录失败'
-          messageType.value = 'error'
-        }
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 1000)
       } catch (error) {
         console.error('登录错误:', error)
-        message.value = '网络错误，请检查后端服务是否运行'
+        message.value = error.response?.data?.message || '登录失败'
         messageType.value = 'error'
+        ElMessage.error(message.value)
       } finally {
         loading.value = false
       }

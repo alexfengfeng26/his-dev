@@ -459,7 +459,7 @@ import {
   Delete,
   Document
 } from '@element-plus/icons-vue'
-import { patientService, type Patient, type QueryPatientDto, type CreatePatientDto, type UpdatePatientDto } from '../services/patient'
+import { patientService } from '../../services/patient'
 
 export default {
   name: 'PatientManagement',
@@ -588,7 +588,7 @@ export default {
       loading.value = true
       try {
         // 构建查询参数
-        const queryParams: QueryPatientDto = {
+        const queryParams = {
           page: pagination.page,
           limit: pagination.size,
           name: searchForm.name || undefined,
@@ -602,8 +602,8 @@ export default {
         const response = await patientService.getPatients(queryParams)
 
         // 更新数据
-        patientList.value = response.patients
-        pagination.total = response.total
+        patientList.value = response.data.patients
+        pagination.total = response.data.total
 
       } catch (error) {
         console.error('获取患者列表失败:', error)
@@ -757,7 +757,7 @@ export default {
 
         if (isEdit.value && form.id) {
           // 更新患者
-          const updateData: UpdatePatientDto = {
+          const updateData = {
             ...patientData,
             status: form.status === '在院' ? 'active' : form.status === '门诊' ? 'active' : 'inactive'
           }
@@ -765,7 +765,7 @@ export default {
           ElMessage.success('更新成功')
         } else {
           // 创建患者 - 需要生成患者编号
-          const createData: CreatePatientDto = {
+          const createData = {
             ...patientData,
             patientNo: form.patientNo || `P${Date.now()}`, // 如果没有患者编号，生成一个
             status: 'active'
