@@ -16,8 +16,8 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          style="margin-left: 12px"
           @change="handleDateChange"
-          style="margin-left: 12px;"
         />
       </div>
     </div>
@@ -25,8 +25,12 @@
     <!-- 统计卡片 -->
     <div class="stats-section">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="(stat, index) in stats" :key="index">
-          <el-card class="stat-card" shadow="hover" :body-style="{ padding: '20px' }">
+        <el-col v-for="(stat, index) in stats" :key="index" :span="6">
+          <el-card
+            class="stat-card"
+            shadow="hover"
+            :body-style="{ padding: '20px' }"
+          >
             <div class="stat-content">
               <div class="stat-icon" :class="stat.type">
                 <component :is="stat.icon" />
@@ -61,7 +65,7 @@
                 </el-radio-group>
               </div>
             </template>
-            <div class="chart-container" ref="visitChartRef"></div>
+            <div ref="visitChartRef" class="chart-container"></div>
           </el-card>
         </el-col>
 
@@ -71,24 +75,28 @@
             <template #header>
               <div class="card-header">
                 <span>科室患者分布</span>
-                <el-button type="text" size="small" @click="refreshDepartmentChart">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="refreshDepartmentChart"
+                >
                   <el-icon><refresh /></el-icon>
                 </el-button>
               </div>
             </template>
-            <div class="chart-container" ref="departmentChartRef"></div>
+            <div ref="departmentChartRef" class="chart-container"></div>
           </el-card>
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" style="margin-top: 20px;">
+      <el-row :gutter="20" style="margin-top: 20px">
         <!-- 病历类型统计 -->
         <el-col :span="8">
           <el-card class="chart-card" shadow="hover">
             <template #header>
               <span>病历类型统计</span>
             </template>
-            <div class="chart-container" ref="recordTypeChartRef"></div>
+            <div ref="recordTypeChartRef" class="chart-container"></div>
           </el-card>
         </el-col>
 
@@ -98,7 +106,7 @@
             <template #header>
               <span>用户活跃度</span>
             </template>
-            <div class="chart-container" ref="userActivityChartRef"></div>
+            <div ref="userActivityChartRef" class="chart-container"></div>
           </el-card>
         </el-col>
 
@@ -111,19 +119,30 @@
             <div class="performance-metrics">
               <div class="metric-item">
                 <div class="metric-label">CPU使用率</div>
-                <el-progress :percentage="systemMetrics.cpu" :color="getProgressColor(systemMetrics.cpu)" />
+                <el-progress
+                  :percentage="systemMetrics.cpu"
+                  :color="getProgressColor(systemMetrics.cpu)"
+                />
               </div>
               <div class="metric-item">
                 <div class="metric-label">内存使用率</div>
-                <el-progress :percentage="systemMetrics.memory" :color="getProgressColor(systemMetrics.memory)" />
+                <el-progress
+                  :percentage="systemMetrics.memory"
+                  :color="getProgressColor(systemMetrics.memory)"
+                />
               </div>
               <div class="metric-item">
                 <div class="metric-label">磁盘使用率</div>
-                <el-progress :percentage="systemMetrics.disk" :color="getProgressColor(systemMetrics.disk)" />
+                <el-progress
+                  :percentage="systemMetrics.disk"
+                  :color="getProgressColor(systemMetrics.disk)"
+                />
               </div>
               <div class="metric-item">
                 <div class="metric-label">API响应时间</div>
-                <div class="metric-value">{{ systemMetrics.responseTime }}ms</div>
+                <div class="metric-value">
+                  {{ systemMetrics.responseTime }}ms
+                </div>
               </div>
             </div>
           </el-card>
@@ -140,7 +159,11 @@
             <template #header>
               <div class="card-header">
                 <span>最新就诊患者</span>
-                <el-button type="text" size="small" @click="$router.push('/patients')">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="$router.push('/patients')"
+                >
                   查看全部
                 </el-button>
               </div>
@@ -149,7 +172,10 @@
               <el-table-column prop="name" label="姓名" width="80" />
               <el-table-column prop="gender" label="性别" width="60">
                 <template #default="{ row }">
-                  <el-tag size="small" :type="row.gender === '男' ? 'primary' : 'success'">
+                  <el-tag
+                    size="small"
+                    :type="row.gender === '男' ? 'primary' : 'success'"
+                  >
                     {{ row.gender }}
                   </el-tag>
                 </template>
@@ -182,7 +208,7 @@
                 v-for="(notification, index) in notifications"
                 :key="index"
                 class="notification-item"
-                :class="{ 'unread': !notification.read }"
+                :class="{ unread: !notification.read }"
                 @click="markAsRead(index)"
               >
                 <div class="notification-icon" :class="notification.type">
@@ -190,8 +216,12 @@
                 </div>
                 <div class="notification-content">
                   <div class="notification-title">{{ notification.title }}</div>
-                  <div class="notification-desc">{{ notification.description }}</div>
-                  <div class="notification-time">{{ formatDateTime(notification.time) }}</div>
+                  <div class="notification-desc">
+                    {{ notification.description }}
+                  </div>
+                  <div class="notification-time">
+                    {{ formatDateTime(notification.time) }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -203,8 +233,8 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, nextTick } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, onMounted, nextTick } from "vue";
+import { ElMessage } from "element-plus";
 import {
   User,
   UserFilled,
@@ -219,228 +249,228 @@ import {
   Warning,
   InfoFilled,
   SuccessFilled,
-  CircleCloseFilled
-} from '@element-plus/icons-vue'
+  CircleCloseFilled,
+} from "@element-plus/icons-vue";
 
 export default {
-  name: 'Dashboard',
+  name: "Dashboard",
   setup() {
     // 响应式数据
-    const dateRange = ref([])
-    const visitChartPeriod = ref('week')
-    const visitChartRef = ref()
-    const departmentChartRef = ref()
-    const recordTypeChartRef = ref()
-    const userActivityChartRef = ref()
+    const dateRange = ref([]);
+    const visitChartPeriod = ref("week");
+    const visitChartRef = ref();
+    const departmentChartRef = ref();
+    const recordTypeChartRef = ref();
+    const userActivityChartRef = ref();
 
     // 统计数据
     const stats = ref([
       {
-        label: '今日就诊',
-        value: '256',
-        type: 'primary',
+        label: "今日就诊",
+        value: "256",
+        type: "primary",
         icon: UserFilled,
-        trend: 12.5
+        trend: 12.5,
       },
       {
-        label: '在院患者',
-        value: '1,842',
-        type: 'success',
+        label: "在院患者",
+        value: "1,842",
+        type: "success",
         icon: Monitor,
-        trend: -3.2
+        trend: -3.2,
       },
       {
-        label: '新增病历',
-        value: '148',
-        type: 'warning',
+        label: "新增病历",
+        value: "148",
+        type: "warning",
         icon: Document,
-        trend: 8.7
+        trend: 8.7,
       },
       {
-        label: '活跃医生',
-        value: '89',
-        type: 'danger',
+        label: "活跃医生",
+        value: "89",
+        type: "danger",
         icon: User,
-        trend: 5.1
-      }
-    ])
+        trend: 5.1,
+      },
+    ]);
 
     // 系统性能指标
     const systemMetrics = reactive({
       cpu: 45,
       memory: 62,
       disk: 78,
-      responseTime: 125
-    })
+      responseTime: 125,
+    });
 
     // 最新患者数据
     const recentPatients = ref([
       {
-        name: '张三',
-        gender: '男',
+        name: "张三",
+        gender: "男",
         age: 45,
-        department: '内科',
-        doctor: '李医生',
-        visitTime: new Date('2024-01-15 10:30:00')
+        department: "内科",
+        doctor: "李医生",
+        visitTime: new Date("2024-01-15 10:30:00"),
       },
       {
-        name: '李四',
-        gender: '女',
+        name: "李四",
+        gender: "女",
         age: 32,
-        department: '外科',
-        doctor: '王医生',
-        visitTime: new Date('2024-01-15 09:45:00')
+        department: "外科",
+        doctor: "王医生",
+        visitTime: new Date("2024-01-15 09:45:00"),
       },
       {
-        name: '王五',
-        gender: '男',
+        name: "王五",
+        gender: "男",
         age: 58,
-        department: '心内科',
-        doctor: '张医生',
-        visitTime: new Date('2024-01-15 09:20:00')
+        department: "心内科",
+        doctor: "张医生",
+        visitTime: new Date("2024-01-15 09:20:00"),
       },
       {
-        name: '赵六',
-        gender: '女',
+        name: "赵六",
+        gender: "女",
         age: 28,
-        department: '妇产科',
-        doctor: '刘医生',
-        visitTime: new Date('2024-01-15 08:55:00')
-      }
-    ])
+        department: "妇产科",
+        doctor: "刘医生",
+        visitTime: new Date("2024-01-15 08:55:00"),
+      },
+    ]);
 
     // 系统通知
     const notifications = ref([
       {
-        title: '系统维护通知',
-        description: '今晚22:00-24:00进行系统维护，期间服务可能中断',
-        type: 'warning',
-        time: new Date('2024-01-15 08:00:00'),
-        read: false
+        title: "系统维护通知",
+        description: "今晚22:00-24:00进行系统维护，期间服务可能中断",
+        type: "warning",
+        time: new Date("2024-01-15 08:00:00"),
+        read: false,
       },
       {
-        title: '数据备份完成',
-        description: '昨日数据备份已成功完成，共备份12,345条记录',
-        type: 'success',
-        time: new Date('2024-01-14 23:30:00'),
-        read: false
+        title: "数据备份完成",
+        description: "昨日数据备份已成功完成，共备份12,345条记录",
+        type: "success",
+        time: new Date("2024-01-14 23:30:00"),
+        read: false,
       },
       {
-        title: '新用户注册',
-        description: '心外科新增陈医生用户账号',
-        type: 'info',
-        time: new Date('2024-01-14 15:20:00'),
-        read: true
+        title: "新用户注册",
+        description: "心外科新增陈医生用户账号",
+        type: "info",
+        time: new Date("2024-01-14 15:20:00"),
+        read: true,
       },
       {
-        title: '存储空间警告',
-        description: '影像存储空间使用率已达到85%，请及时清理',
-        type: 'error',
-        time: new Date('2024-01-14 10:15:00'),
-        read: true
-      }
-    ])
+        title: "存储空间警告",
+        description: "影像存储空间使用率已达到85%，请及时清理",
+        type: "error",
+        time: new Date("2024-01-14 10:15:00"),
+        read: true,
+      },
+    ]);
 
     // 工具方法
     const formatDateTime = (dateTime) => {
-      if (!dateTime) return '-'
-      return new Date(dateTime).toLocaleString('zh-CN', {
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    }
+      if (!dateTime) return "-";
+      return new Date(dateTime).toLocaleString("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    };
 
     const getProgressColor = (percentage) => {
-      if (percentage < 60) return '#67c23a'
-      if (percentage < 80) return '#e6a23c'
-      return '#f56c6c'
-    }
+      if (percentage < 60) return "#67c23a";
+      if (percentage < 80) return "#e6a23c";
+      return "#f56c6c";
+    };
 
     const getNotificationIcon = (type) => {
       const iconMap = {
         success: SuccessFilled,
         warning: Warning,
         error: CircleCloseFilled,
-        info: InfoFilled
-      }
-      return iconMap[type] || InfoFilled
-    }
+        info: InfoFilled,
+      };
+      return iconMap[type] || InfoFilled;
+    };
 
     // 数据刷新方法
     const refreshData = async () => {
-      ElMessage.info('正在刷新数据...')
+      ElMessage.info("正在刷新数据...");
       try {
         // 模拟数据刷新
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // 更新统计数据
-        stats.value.forEach(stat => {
-          const randomChange = (Math.random() - 0.5) * 10
-          stat.trend = Math.round(randomChange * 10) / 10
-          const currentValue = parseInt(stat.value.replace(/,/g, ''))
-          const newValue = Math.max(0, currentValue + Math.round(randomChange))
-          stat.value = newValue.toLocaleString()
-        })
+        stats.value.forEach((stat) => {
+          const randomChange = (Math.random() - 0.5) * 10;
+          stat.trend = Math.round(randomChange * 10) / 10;
+          const currentValue = parseInt(stat.value.replace(/,/g, ""));
+          const newValue = Math.max(0, currentValue + Math.round(randomChange));
+          stat.value = newValue.toLocaleString();
+        });
 
         // 更新系统指标
-        systemMetrics.cpu = Math.round(30 + Math.random() * 40)
-        systemMetrics.memory = Math.round(40 + Math.random() * 30)
-        systemMetrics.disk = Math.round(60 + Math.random() * 25)
-        systemMetrics.responseTime = Math.round(80 + Math.random() * 100)
+        systemMetrics.cpu = Math.round(30 + Math.random() * 40);
+        systemMetrics.memory = Math.round(40 + Math.random() * 30);
+        systemMetrics.disk = Math.round(60 + Math.random() * 25);
+        systemMetrics.responseTime = Math.round(80 + Math.random() * 100);
 
-        ElMessage.success('数据刷新成功')
+        ElMessage.success("数据刷新成功");
       } catch (error) {
-        console.error('数据刷新失败:', error)
-        ElMessage.error('数据刷新失败')
+        console.error("数据刷新失败:", error);
+        ElMessage.error("数据刷新失败");
       }
-    }
+    };
 
     const handleDateChange = (dates) => {
-      console.log('日期范围变化:', dates)
+      console.log("日期范围变化:", dates);
       // 这里可以根据日期范围重新加载数据
-      refreshData()
-    }
+      refreshData();
+    };
 
     // 通知处理方法
     const markAsRead = (index) => {
-      notifications.value[index].read = true
-    }
+      notifications.value[index].read = true;
+    };
 
     const markAllRead = () => {
-      notifications.value.forEach(notification => {
-        notification.read = true
-      })
-      ElMessage.success('已全部标记为已读')
-    }
+      notifications.value.forEach((notification) => {
+        notification.read = true;
+      });
+      ElMessage.success("已全部标记为已读");
+    };
 
     // 图表刷新方法（占位实现）
     const refreshDepartmentChart = () => {
-      ElMessage.info('刷新科室分布数据...')
-    }
+      ElMessage.info("刷新科室分布数据...");
+    };
 
     // 模拟图表初始化
     const initCharts = async () => {
-      await nextTick()
+      await nextTick();
 
       // 这里可以集成 ECharts 或其他图表库
       // 目前先显示占位内容
-      console.log('图表初始化完成')
-    }
+      console.log("图表初始化完成");
+    };
 
     // 生命周期
     onMounted(() => {
-      initCharts()
+      initCharts();
 
       // 定时刷新数据
       setInterval(() => {
         // 模拟实时数据更新
-        systemMetrics.cpu = Math.round(30 + Math.random() * 40)
-        systemMetrics.memory = Math.round(40 + Math.random() * 30)
-        systemMetrics.responseTime = Math.round(80 + Math.random() * 100)
-      }, 5000)
-    })
+        systemMetrics.cpu = Math.round(30 + Math.random() * 40);
+        systemMetrics.memory = Math.round(40 + Math.random() * 30);
+        systemMetrics.responseTime = Math.round(80 + Math.random() * 100);
+      }, 5000);
+    });
 
     return {
       dateRange,
@@ -474,10 +504,10 @@ export default {
       Warning,
       InfoFilled,
       SuccessFilled,
-      CircleCloseFilled
-    }
-  }
-}
+      CircleCloseFilled,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -622,7 +652,7 @@ export default {
         font-size: 14px;
 
         &::before {
-          content: '图表区域 (可集成 ECharts)';
+          content: "图表区域 (可集成 ECharts)";
         }
       }
 
@@ -690,7 +720,7 @@ export default {
           position: relative;
 
           &::before {
-            content: '';
+            content: "";
             position: absolute;
             left: -8px;
             top: 50%;
@@ -772,7 +802,7 @@ export default {
 @media (max-width: 1200px) {
   .dashboard {
     .stats-section {
-      .el-col:nth-child(n+5) {
+      .el-col:nth-child(n + 5) {
         margin-top: 20px;
       }
     }

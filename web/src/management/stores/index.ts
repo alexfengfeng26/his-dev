@@ -1,4 +1,4 @@
-export { useAuthStore, api } from './auth'
+export { useAuthStore, api } from "./auth";
 
 // 可以在这里导出其他stores
 // export { useUserStore } from './user'

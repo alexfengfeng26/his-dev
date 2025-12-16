@@ -11,7 +11,7 @@
         <input v-model="password" type="password" required />
       </div>
       <button type="submit" :disabled="loading">
-        {{ loading ? '登录中...' : '登录' }}
+        {{ loading ? "登录中..." : "登录" }}
       </button>
     </form>
     <div v-if="message" :class="messageType">
@@ -25,48 +25,48 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores'
-import { ElMessage } from 'element-plus'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../../stores";
+import { ElMessage } from "element-plus";
 
 export default {
-  name: 'SimpleLogin',
+  name: "SimpleLogin",
   setup() {
-    const router = useRouter()
-    const authStore = useAuthStore()
-    const username = ref('admin')
-    const password = ref('Admin123!')
-    const loading = ref(false)
-    const message = ref('')
-    const messageType = ref('')
+    const router = useRouter();
+    const authStore = useAuthStore();
+    const username = ref("admin");
+    const password = ref("Admin123!");
+    const loading = ref(false);
+    const message = ref("");
+    const messageType = ref("");
 
     const handleLogin = async () => {
-      loading.value = true
-      message.value = ''
+      loading.value = true;
+      message.value = "";
 
       try {
         await authStore.login({
           username: username.value,
-          password: password.value
-        })
+          password: password.value,
+        });
 
-        message.value = '登录成功！正在跳转...'
-        messageType.value = 'success'
-        ElMessage.success('登录成功')
+        message.value = "登录成功！正在跳转...";
+        messageType.value = "success";
+        ElMessage.success("登录成功");
 
         setTimeout(() => {
-          router.push('/dashboard')
-        }, 1000)
+          router.push("/dashboard");
+        }, 1000);
       } catch (error) {
-        console.error('登录错误:', error)
-        message.value = error.response?.data?.message || '登录失败'
-        messageType.value = 'error'
-        ElMessage.error(message.value)
+        console.error("登录错误:", error);
+        message.value = error.response?.data?.message || "登录失败";
+        messageType.value = "error";
+        ElMessage.error(message.value);
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    }
+    };
 
     return {
       username,
@@ -74,10 +74,10 @@ export default {
       loading,
       message,
       messageType,
-      handleLogin
-    }
-  }
-}
+      handleLogin,
+    };
+  },
+};
 </script>
 
 <style scoped>

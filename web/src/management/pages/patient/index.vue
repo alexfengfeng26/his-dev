@@ -10,12 +10,8 @@
         <el-button type="primary" :icon="Plus" @click="handleAdd">
           新增患者
         </el-button>
-        <el-button :icon="Upload" @click="handleImport">
-          批量导入
-        </el-button>
-        <el-button :icon="Download" @click="handleExport">
-          导出数据
-        </el-button>
+        <el-button :icon="Upload" @click="handleImport"> 批量导入 </el-button>
+        <el-button :icon="Download" @click="handleExport"> 导出数据 </el-button>
       </div>
     </div>
 
@@ -87,7 +83,7 @@
         <el-table-column prop="patientNo" label="患者编号" width="120" />
         <el-table-column prop="_id" label="ID" width="80">
           <template #default="{ row }">
-            {{ (row._id || '').slice(-6) }}
+            {{ (row._id || "").slice(-6) }}
           </template>
         </el-table-column>
         <el-table-column prop="name" label="姓名" width="80">
@@ -99,16 +95,35 @@
         </el-table-column>
         <el-table-column prop="gender" label="性别" width="60">
           <template #default="{ row }">
-            <el-tag :type="row.gender === 'male' ? 'primary' : 'success'" size="small">
-              {{ row.gender === 'male' ? '男' : row.gender === 'female' ? '女' : '未知' }}
+            <el-tag
+              :type="row.gender === 'male' ? 'primary' : 'success'"
+              size="small"
+            >
+              {{
+                row.gender === "male"
+                  ? "男"
+                  : row.gender === "female"
+                    ? "女"
+                    : "未知"
+              }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="age" label="年龄" width="60" />
         <el-table-column prop="idCard" label="身份证号" width="180" />
         <el-table-column prop="phone" label="手机号" width="120" />
-        <el-table-column prop="address" label="地址" width="150" show-overflow-tooltip />
-        <el-table-column prop="occupation" label="职业" width="100" show-overflow-tooltip />
+        <el-table-column
+          prop="address"
+          label="地址"
+          width="150"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="occupation"
+          label="职业"
+          width="100"
+          show-overflow-tooltip
+        />
         <el-table-column prop="bloodType" label="血型" width="60" />
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
@@ -182,22 +197,14 @@
       :close-on-click-modal="false"
       @close="handleDialogClose"
     >
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-tabs v-model="activeTab" type="card">
           <!-- 基本信息 -->
           <el-tab-pane label="基本信息" name="basic">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="姓名" prop="name">
-                  <el-input
-                    v-model="form.name"
-                    placeholder="请输入患者姓名"
-                  />
+                  <el-input v-model="form.name" placeholder="请输入患者姓名" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -234,10 +241,7 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="手机号" prop="phone">
-                  <el-input
-                    v-model="form.phone"
-                    placeholder="请输入手机号"
-                  />
+                  <el-input v-model="form.phone" placeholder="请输入手机号" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -252,10 +256,7 @@
             </el-row>
 
             <el-form-item label="地址" prop="address">
-              <el-input
-                v-model="form.address"
-                placeholder="请输入详细地址"
-              />
+              <el-input v-model="form.address" placeholder="请输入详细地址" />
             </el-form-item>
           </el-tab-pane>
 
@@ -395,50 +396,97 @@
     </el-dialog>
 
     <!-- 患者详情对话框 -->
-    <el-dialog
-      v-model="viewDialogVisible"
-      title="患者详情"
-      width="900px"
-    >
+    <el-dialog v-model="viewDialogVisible" title="患者详情" width="900px">
       <div v-if="viewPatient" class="patient-detail">
         <el-descriptions title="基本信息" :column="3" border>
-          <el-descriptions-item label="患者ID">{{ viewPatient.id }}</el-descriptions-item>
-          <el-descriptions-item label="姓名">{{ viewPatient.name }}</el-descriptions-item>
+          <el-descriptions-item label="患者ID">{{
+            viewPatient.id
+          }}</el-descriptions-item>
+          <el-descriptions-item label="姓名">{{
+            viewPatient.name
+          }}</el-descriptions-item>
           <el-descriptions-item label="性别">
             <el-tag :type="viewPatient.gender === '男' ? 'primary' : 'success'">
               {{ viewPatient.gender }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="年龄">{{ viewPatient.age }}岁</el-descriptions-item>
-          <el-descriptions-item label="身份证号">{{ viewPatient.idCard }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{ viewPatient.phone }}</el-descriptions-item>
-          <el-descriptions-item label="邮箱" :span="2">{{ viewPatient.email || '未填写' }}</el-descriptions-item>
-          <el-descriptions-item label="地址" :span="3">{{ viewPatient.address || '未填写' }}</el-descriptions-item>
+          <el-descriptions-item label="年龄"
+            >{{ viewPatient.age }}岁</el-descriptions-item
+          >
+          <el-descriptions-item label="身份证号">{{
+            viewPatient.idCard
+          }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{
+            viewPatient.phone
+          }}</el-descriptions-item>
+          <el-descriptions-item label="邮箱" :span="2">{{
+            viewPatient.email || "未填写"
+          }}</el-descriptions-item>
+          <el-descriptions-item label="地址" :span="3">{{
+            viewPatient.address || "未填写"
+          }}</el-descriptions-item>
         </el-descriptions>
 
-        <el-descriptions title="就诊信息" :column="3" border style="margin-top: 20px;">
-          <el-descriptions-item label="就诊科室">{{ viewPatient.department }}</el-descriptions-item>
-          <el-descriptions-item label="主治医生">{{ viewPatient.doctor }}</el-descriptions-item>
-          <el-descriptions-item label="就诊卡号">{{ viewPatient.cardNumber }}</el-descriptions-item>
+        <el-descriptions
+          title="就诊信息"
+          :column="3"
+          border
+          style="margin-top: 20px"
+        >
+          <el-descriptions-item label="就诊科室">{{
+            viewPatient.department
+          }}</el-descriptions-item>
+          <el-descriptions-item label="主治医生">{{
+            viewPatient.doctor
+          }}</el-descriptions-item>
+          <el-descriptions-item label="就诊卡号">{{
+            viewPatient.cardNumber
+          }}</el-descriptions-item>
           <el-descriptions-item label="患者状态">
             <el-tag :type="getStatusType(viewPatient.status)">
               {{ getStatusText(viewPatient.status) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="最后就诊">{{ formatDateTime(viewPatient.lastVisitTime) }}</el-descriptions-item>
-          <el-descriptions-item label="创建时间">{{ formatDateTime(viewPatient.createdAt) }}</el-descriptions-item>
+          <el-descriptions-item label="最后就诊">{{
+            formatDateTime(viewPatient.lastVisitTime)
+          }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间">{{
+            formatDateTime(viewPatient.createdAt)
+          }}</el-descriptions-item>
         </el-descriptions>
 
-        <el-descriptions title="医疗信息" :column="1" border style="margin-top: 20px;">
-          <el-descriptions-item label="过敏史">{{ viewPatient.allergies || '无' }}</el-descriptions-item>
-          <el-descriptions-item label="既往病史">{{ viewPatient.medicalHistory || '无' }}</el-descriptions-item>
+        <el-descriptions
+          title="医疗信息"
+          :column="1"
+          border
+          style="margin-top: 20px"
+        >
+          <el-descriptions-item label="过敏史">{{
+            viewPatient.allergies || "无"
+          }}</el-descriptions-item>
+          <el-descriptions-item label="既往病史">{{
+            viewPatient.medicalHistory || "无"
+          }}</el-descriptions-item>
         </el-descriptions>
 
-        <el-descriptions title="紧急联系人" :column="3" border style="margin-top: 20px;">
-          <el-descriptions-item label="联系人">{{ viewPatient.emergencyContact }}</el-descriptions-item>
-          <el-descriptions-item label="关系">{{ viewPatient.emergencyRelation }}</el-descriptions-item>
-          <el-descriptions-item label="电话">{{ viewPatient.emergencyPhone }}</el-descriptions-item>
-          <el-descriptions-item label="地址" :span="3">{{ viewPatient.emergencyAddress }}</el-descriptions-item>
+        <el-descriptions
+          title="紧急联系人"
+          :column="3"
+          border
+          style="margin-top: 20px"
+        >
+          <el-descriptions-item label="联系人">{{
+            viewPatient.emergencyContact
+          }}</el-descriptions-item>
+          <el-descriptions-item label="关系">{{
+            viewPatient.emergencyRelation
+          }}</el-descriptions-item>
+          <el-descriptions-item label="电话">{{
+            viewPatient.emergencyPhone
+          }}</el-descriptions-item>
+          <el-descriptions-item label="地址" :span="3">{{
+            viewPatient.emergencyAddress
+          }}</el-descriptions-item>
         </el-descriptions>
       </div>
     </el-dialog>
@@ -446,8 +494,8 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref, reactive, computed, onMounted } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import {
   Plus,
   Upload,
@@ -457,135 +505,141 @@ import {
   View,
   Edit,
   Delete,
-  Document
-} from '@element-plus/icons-vue'
-import { patientService } from '../../services/patient'
+  Document,
+} from "@element-plus/icons-vue";
+import { patientService } from "../../services/patient";
 
 export default {
-  name: 'PatientManagement',
+  name: "PatientManagement",
   setup() {
-    const loading = ref(false)
-    const submitLoading = ref(false)
-    const dialogVisible = ref(false)
-    const viewDialogVisible = ref(false)
-    const isEdit = ref(false)
-    const formRef = ref()
-    const viewPatient = ref(null)
-    const activeTab = ref('basic')
+    const loading = ref(false);
+    const submitLoading = ref(false);
+    const dialogVisible = ref(false);
+    const viewDialogVisible = ref(false);
+    const isEdit = ref(false);
+    const formRef = ref();
+    const viewPatient = ref(null);
+    const activeTab = ref("basic");
 
     // 搜索表单
     const searchForm = reactive({
-      name: '',
-      idCard: '',
-      phone: '',
-      department: ''
-    })
+      name: "",
+      idCard: "",
+      phone: "",
+      department: "",
+    });
 
     // 患者表单
     const form = reactive({
       id: null,
-      name: '',
-      gender: '男',
-      birthDate: '',
-      idCard: '',
-      phone: '',
-      email: '',
-      address: '',
-      department: '',
-      doctor: '',
-      cardNumber: '',
-      status: 'outpatient',
-      allergies: '',
-      medicalHistory: '',
-      emergencyContact: '',
-      emergencyRelation: '',
-      emergencyPhone: '',
-      emergencyAddress: ''
-    })
+      name: "",
+      gender: "男",
+      birthDate: "",
+      idCard: "",
+      phone: "",
+      email: "",
+      address: "",
+      department: "",
+      doctor: "",
+      cardNumber: "",
+      status: "outpatient",
+      allergies: "",
+      medicalHistory: "",
+      emergencyContact: "",
+      emergencyRelation: "",
+      emergencyPhone: "",
+      emergencyAddress: "",
+    });
 
     // 分页
     const pagination = reactive({
       page: 1,
       size: 20,
-      total: 0
-    })
+      total: 0,
+    });
 
     // 患者列表数据
-    const patientList = ref([])
+    const patientList = ref([]);
 
     // 表单验证规则
     const rules = {
-      name: [
-        { required: true, message: '请输入患者姓名', trigger: 'blur' }
-      ],
-      gender: [
-        { required: true, message: '请选择性别', trigger: 'change' }
-      ],
+      name: [{ required: true, message: "请输入患者姓名", trigger: "blur" }],
+      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
       birthDate: [
-        { required: true, message: '请选择出生日期', trigger: 'change' }
+        { required: true, message: "请选择出生日期", trigger: "change" },
       ],
       idCard: [
-        { required: true, message: '请输入身份证号', trigger: 'blur' },
-        { pattern: /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/, message: '请输入正确的身份证号', trigger: 'blur' }
+        { required: true, message: "请输入身份证号", trigger: "blur" },
+        {
+          pattern:
+            /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,
+          message: "请输入正确的身份证号",
+          trigger: "blur",
+        },
       ],
       phone: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
-        { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
+        { required: true, message: "请输入手机号", trigger: "blur" },
+        {
+          pattern: /^1[3-9]\d{9}$/,
+          message: "请输入正确的手机号格式",
+          trigger: "blur",
+        },
       ],
       department: [
-        { required: true, message: '请选择就诊科室', trigger: 'change' }
+        { required: true, message: "请选择就诊科室", trigger: "change" },
       ],
-      doctor: [
-        { required: true, message: '请输入主治医生', trigger: 'blur' }
-      ]
-    }
+      doctor: [{ required: true, message: "请输入主治医生", trigger: "blur" }],
+    };
 
     // 计算属性
     const dialogTitle = computed(() => {
-      return isEdit.value ? '编辑患者' : '新增患者'
-    })
+      return isEdit.value ? "编辑患者" : "新增患者";
+    });
 
     // 状态相关方法
     const getStatusText = (status) => {
       const statusMap = {
-        active: '活跃',
-        inactive: '非活跃',
-        deceased: '已故'
-      }
-      return statusMap[status] || status
-    }
+        active: "活跃",
+        inactive: "非活跃",
+        deceased: "已故",
+      };
+      return statusMap[status] || status;
+    };
 
     const getStatusType = (status) => {
       const typeMap = {
-        active: 'primary',
-        inactive: 'warning',
-        deceased: 'danger'
-      }
-      return typeMap[status] || 'info'
-    }
+        active: "primary",
+        inactive: "warning",
+        deceased: "danger",
+      };
+      return typeMap[status] || "info";
+    };
 
     // 日期格式化
     const formatDateTime = (dateTime) => {
-      if (!dateTime) return '-'
-      return new Date(dateTime).toLocaleString('zh-CN')
-    }
+      if (!dateTime) return "-";
+      return new Date(dateTime).toLocaleString("zh-CN");
+    };
 
     // 计算年龄
     const calculateAge = (birthDate) => {
-      if (!birthDate) return 0
-      const today = new Date()
-      const birth = new Date(birthDate)
-      let age = today.getFullYear() - birth.getFullYear()
-      const monthDiff = today.getMonth() - birth.getMonth()
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-        age--
+      if (!birthDate) return 0;
+      const today = new Date();
+      const birth = new Date(birthDate);
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birth.getDate())
+      ) {
+        age--;
       }
-      return age
-    }
+      return age;
+    };
 
     // 获取患者列表
     const fetchPatientList = async () => {
-      loading.value = true
+      loading.value = true;
       try {
         // 构建查询参数
         const queryParams = {
@@ -595,231 +649,256 @@ export default {
           idCard: searchForm.idCard || undefined,
           phone: searchForm.phone || undefined,
           status: undefined, // 前端暂无status筛选，可根据需要添加
-          gender: undefined  // 前端暂无gender筛选，可根据需要添加
-        }
+          gender: undefined, // 前端暂无gender筛选，可根据需要添加
+        };
 
         // 调用真实API
-        const response = await patientService.getPatients(queryParams)
+        const response = await patientService.getPatients(queryParams);
 
         // 更新数据
-        patientList.value = response.patients
-        pagination.total = response.total
-
+        patientList.value = response.patients;
+        pagination.total = response.total;
       } catch (error) {
-        console.error('获取患者列表失败:', error)
-        ElMessage.error('获取患者列表失败')
+        console.error("获取患者列表失败:", error);
+        ElMessage.error("获取患者列表失败");
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    }
+    };
 
     // 搜索
     const handleSearch = () => {
-      pagination.page = 1
-      fetchPatientList()
-    }
+      pagination.page = 1;
+      fetchPatientList();
+    };
 
     // 重置搜索
     const handleReset = () => {
       Object.assign(searchForm, {
-        name: '',
-        idCard: '',
-        phone: '',
-        department: ''
-      })
-      pagination.page = 1
-      fetchPatientList()
-    }
+        name: "",
+        idCard: "",
+        phone: "",
+        department: "",
+      });
+      pagination.page = 1;
+      fetchPatientList();
+    };
 
     // 分页变化
     const handleSizeChange = (size) => {
-      pagination.size = size
-      pagination.page = 1
-      fetchPatientList()
-    }
+      pagination.size = size;
+      pagination.page = 1;
+      fetchPatientList();
+    };
 
     const handlePageChange = (page) => {
-      pagination.page = page
-      fetchPatientList()
-    }
+      pagination.page = page;
+      fetchPatientList();
+    };
 
     // 新增患者
     const handleAdd = () => {
-      isEdit.value = false
-      dialogVisible.value = true
-      activeTab.value = 'basic'
-      resetForm()
-    }
+      isEdit.value = false;
+      dialogVisible.value = true;
+      activeTab.value = "basic";
+      resetForm();
+    };
 
     // 编辑患者
     const handleEdit = (row) => {
-      isEdit.value = true
-      dialogVisible.value = true
-      activeTab.value = 'basic'
+      isEdit.value = true;
+      dialogVisible.value = true;
+      activeTab.value = "basic";
 
       // 将后端数据转换为前端表单格式
       Object.assign(form, {
         id: row._id || row.id,
         patientNo: row.patientNo,
         name: row.name,
-        gender: row.gender === 'male' ? '男' : row.gender === 'female' ? '女' : '未知',
+        gender:
+          row.gender === "male"
+            ? "男"
+            : row.gender === "female"
+              ? "女"
+              : "未知",
         birthDate: row.birthDate,
         idCard: row.idCard,
         phone: row.phone,
-        email: row.email || '',
+        email: row.email || "",
         address: row.address,
-        occupation: row.occupation || '',
-        bloodType: row.bloodType || 'unknown',
-        allergies: row.allergies ? row.allergies.join('，') : '',
-        medicalHistory: row.medicalHistory ? row.medicalHistory.join('，') : '',
-        familyHistory: row.familyHistory ? row.familyHistory.join('，') : '',
-        emergencyContact: row.emergencyContactName || '',
-        emergencyRelation: row.emergencyContactRelation || '',
-        emergencyPhone: row.emergencyContactPhone || '',
-        status: row.status === 'active' ? '门诊' : row.status === 'inactive' ? '出院' : '在院'
-      })
-    }
+        occupation: row.occupation || "",
+        bloodType: row.bloodType || "unknown",
+        allergies: row.allergies ? row.allergies.join("，") : "",
+        medicalHistory: row.medicalHistory ? row.medicalHistory.join("，") : "",
+        familyHistory: row.familyHistory ? row.familyHistory.join("，") : "",
+        emergencyContact: row.emergencyContactName || "",
+        emergencyRelation: row.emergencyContactRelation || "",
+        emergencyPhone: row.emergencyContactPhone || "",
+        status:
+          row.status === "active"
+            ? "门诊"
+            : row.status === "inactive"
+              ? "出院"
+              : "在院",
+      });
+    };
 
     // 查看患者详情
     const handleView = (row) => {
-      viewPatient.value = row
-      viewDialogVisible.value = true
-    }
+      viewPatient.value = row;
+      viewDialogVisible.value = true;
+    };
 
     // 查看病历
     const handleMedicalRecord = (row) => {
-      ElMessage.info(`查看患者 ${row.name} 的病历`)
+      ElMessage.info(`查看患者 ${row.name} 的病历`);
       // 这里可以跳转到病历页面或打开病历对话框
-    }
+    };
 
     // 删除患者
     const handleDelete = async (row) => {
       try {
         await ElMessageBox.confirm(
           `确定要删除患者 "${row.name}" 吗？此操作不可恢复！`,
-          '删除确认',
+          "删除确认",
           {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        )
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          },
+        );
 
         // 调用真实的删除API
-        await patientService.deletePatient(row._id || row.id)
+        await patientService.deletePatient(row._id || row.id);
 
-        ElMessage.success('删除成功')
-        fetchPatientList()
+        ElMessage.success("删除成功");
+        fetchPatientList();
       } catch (error) {
-        if (error !== 'cancel') {
-          console.error('删除患者失败:', error)
-          ElMessage.error('删除失败')
+        if (error !== "cancel") {
+          console.error("删除患者失败:", error);
+          ElMessage.error("删除失败");
         }
       }
-    }
+    };
 
     // 批量导入
     const handleImport = () => {
-      ElMessage.info('批量导入功能开发中...')
-    }
+      ElMessage.info("批量导入功能开发中...");
+    };
 
     // 导出数据
     const handleExport = () => {
-      ElMessage.info('导出功能开发中...')
-    }
+      ElMessage.info("导出功能开发中...");
+    };
 
     // 提交表单
     const handleSubmit = async () => {
-      if (!formRef.value) return
+      if (!formRef.value) return;
 
       try {
-        await formRef.value.validate()
-        submitLoading.value = true
+        await formRef.value.validate();
+        submitLoading.value = true;
 
         // 构建患者数据
         const patientData = {
           name: form.name,
-          gender: form.gender === '男' ? 'male' : form.gender === '女' ? 'female' : 'unknown',
+          gender:
+            form.gender === "男"
+              ? "male"
+              : form.gender === "女"
+                ? "female"
+                : "unknown",
           birthDate: form.birthDate,
           idCard: form.idCard,
           phone: form.phone,
           email: form.email || undefined,
           address: form.address,
           occupation: form.occupation || undefined,
-          bloodType: form.bloodType || 'unknown',
-          allergies: form.allergies ? form.allergies.split('，').filter(a => a.trim()) : undefined,
-          medicalHistory: form.medicalHistory ? form.medicalHistory.split('，').filter(m => m.trim()) : undefined,
-          familyHistory: form.familyHistory ? form.familyHistory.split('，').filter(f => f.trim()) : undefined,
+          bloodType: form.bloodType || "unknown",
+          allergies: form.allergies
+            ? form.allergies.split("，").filter((a) => a.trim())
+            : undefined,
+          medicalHistory: form.medicalHistory
+            ? form.medicalHistory.split("，").filter((m) => m.trim())
+            : undefined,
+          familyHistory: form.familyHistory
+            ? form.familyHistory.split("，").filter((f) => f.trim())
+            : undefined,
           emergencyContactName: form.emergencyContact || undefined,
           emergencyContactRelation: form.emergencyRelation || undefined,
-          emergencyContactPhone: form.emergencyPhone || undefined
-        }
+          emergencyContactPhone: form.emergencyPhone || undefined,
+        };
 
         if (isEdit.value && form.id) {
           // 更新患者
           const updateData = {
             ...patientData,
-            status: form.status === '在院' ? 'active' : form.status === '门诊' ? 'active' : 'inactive'
-          }
-          await patientService.updatePatient(form.id, updateData)
-          ElMessage.success('更新成功')
+            status:
+              form.status === "在院"
+                ? "active"
+                : form.status === "门诊"
+                  ? "active"
+                  : "inactive",
+          };
+          await patientService.updatePatient(form.id, updateData);
+          ElMessage.success("更新成功");
         } else {
           // 创建患者 - 需要生成患者编号
           const createData = {
             ...patientData,
             patientNo: form.patientNo || `P${Date.now()}`, // 如果没有患者编号，生成一个
-            status: 'active'
-          }
-          await patientService.createPatient(createData)
-          ElMessage.success('创建成功')
+            status: "active",
+          };
+          await patientService.createPatient(createData);
+          ElMessage.success("创建成功");
         }
 
-        dialogVisible.value = false
-        fetchPatientList()
+        dialogVisible.value = false;
+        fetchPatientList();
       } catch (error) {
-        console.error('保存患者失败:', error)
-        ElMessage.error('保存失败')
+        console.error("保存患者失败:", error);
+        ElMessage.error("保存失败");
       } finally {
-        submitLoading.value = false
+        submitLoading.value = false;
       }
-    }
+    };
 
     // 对话框关闭
     const handleDialogClose = () => {
-      resetForm()
-    }
+      resetForm();
+    };
 
     // 重置表单
     const resetForm = () => {
       Object.assign(form, {
         id: null,
-        name: '',
-        gender: '男',
-        birthDate: '',
-        idCard: '',
-        phone: '',
-        email: '',
-        address: '',
-        department: '',
-        doctor: '',
-        cardNumber: '',
-        status: 'outpatient',
-        allergies: '',
-        medicalHistory: '',
-        emergencyContact: '',
-        emergencyRelation: '',
-        emergencyPhone: '',
-        emergencyAddress: ''
-      })
+        name: "",
+        gender: "男",
+        birthDate: "",
+        idCard: "",
+        phone: "",
+        email: "",
+        address: "",
+        department: "",
+        doctor: "",
+        cardNumber: "",
+        status: "outpatient",
+        allergies: "",
+        medicalHistory: "",
+        emergencyContact: "",
+        emergencyRelation: "",
+        emergencyPhone: "",
+        emergencyAddress: "",
+      });
       if (formRef.value) {
-        formRef.value.clearValidate()
+        formRef.value.clearValidate();
       }
-    }
+    };
 
     // 初始化
     onMounted(() => {
-      fetchPatientList()
-    })
+      fetchPatientList();
+    });
 
     return {
       loading,
@@ -861,10 +940,10 @@ export default {
       View,
       Edit,
       Delete,
-      Document
-    }
-  }
-}
+      Document,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

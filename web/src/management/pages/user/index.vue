@@ -10,9 +10,7 @@
         <el-button type="primary" :icon="Plus" @click="handleAdd">
           新增用户
         </el-button>
-        <el-button :icon="Download" @click="handleExport">
-          导出数据
-        </el-button>
+        <el-button :icon="Download" @click="handleExport"> 导出数据 </el-button>
       </div>
     </div>
 
@@ -95,7 +93,7 @@
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
             <el-tag :type="row.status ? 'success' : 'danger'">
-              {{ row.status ? '启用' : '禁用' }}
+              {{ row.status ? "启用" : "禁用" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -156,12 +154,7 @@
       :close-on-click-modal="false"
       @close="handleDialogClose"
     >
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
@@ -174,10 +167,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="真实姓名" prop="realName">
-              <el-input
-                v-model="form.realName"
-                placeholder="请输入真实姓名"
-              />
+              <el-input v-model="form.realName" placeholder="请输入真实姓名" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -194,10 +184,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="手机号" prop="phone">
-              <el-input
-                v-model="form.phone"
-                placeholder="请输入手机号"
-              />
+              <el-input v-model="form.phone" placeholder="请输入手机号" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -219,15 +206,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="科室" prop="department">
-              <el-input
-                v-model="form.department"
-                placeholder="请输入科室"
-              />
+              <el-input v-model="form.department" placeholder="请输入科室" />
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row :gutter="20" v-if="!isEdit">
+        <el-row v-if="!isEdit" :gutter="20">
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
               <el-input
@@ -283,32 +267,46 @@
     </el-dialog>
 
     <!-- 用户详情对话框 -->
-    <el-dialog
-      v-model="viewDialogVisible"
-      title="用户详情"
-      width="500px"
-    >
+    <el-dialog v-model="viewDialogVisible" title="用户详情" width="500px">
       <div v-if="viewUser" class="user-detail">
         <el-descriptions :column="1" border>
-          <el-descriptions-item label="用户ID">{{ viewUser.id }}</el-descriptions-item>
-          <el-descriptions-item label="用户名">{{ viewUser.username }}</el-descriptions-item>
-          <el-descriptions-item label="真实姓名">{{ viewUser.realName }}</el-descriptions-item>
-          <el-descriptions-item label="邮箱">{{ viewUser.email }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{ viewUser.phone }}</el-descriptions-item>
+          <el-descriptions-item label="用户ID">{{
+            viewUser.id
+          }}</el-descriptions-item>
+          <el-descriptions-item label="用户名">{{
+            viewUser.username
+          }}</el-descriptions-item>
+          <el-descriptions-item label="真实姓名">{{
+            viewUser.realName
+          }}</el-descriptions-item>
+          <el-descriptions-item label="邮箱">{{
+            viewUser.email
+          }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{
+            viewUser.phone
+          }}</el-descriptions-item>
           <el-descriptions-item label="角色">
             <el-tag :type="getRoleTagType(viewUser.role)">
               {{ getRoleText(viewUser.role) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="科室">{{ viewUser.department }}</el-descriptions-item>
+          <el-descriptions-item label="科室">{{
+            viewUser.department
+          }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="viewUser.status ? 'success' : 'danger'">
-              {{ viewUser.status ? '启用' : '禁用' }}
+              {{ viewUser.status ? "启用" : "禁用" }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="创建时间">{{ formatDateTime(viewUser.createdAt) }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录">{{ formatDateTime(viewUser.lastLoginTime) }}</el-descriptions-item>
-          <el-descriptions-item label="备注">{{ viewUser.remark || '无' }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间">{{
+            formatDateTime(viewUser.createdAt)
+          }}</el-descriptions-item>
+          <el-descriptions-item label="最后登录">{{
+            formatDateTime(viewUser.lastLoginTime)
+          }}</el-descriptions-item>
+          <el-descriptions-item label="备注">{{
+            viewUser.remark || "无"
+          }}</el-descriptions-item>
         </el-descriptions>
       </div>
     </el-dialog>
@@ -316,8 +314,8 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref, reactive, computed, onMounted } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import {
   Plus,
   Download,
@@ -325,276 +323,287 @@ import {
   Refresh,
   Edit,
   Delete,
-  Key
-} from '@element-plus/icons-vue'
-import { userService } from '../../services/user'
+  Key,
+} from "@element-plus/icons-vue";
+import { userService } from "../../services/user";
 
 export default {
-  name: 'UserManagement',
+  name: "UserManagement",
   setup() {
-    const loading = ref(false)
-    const submitLoading = ref(false)
-    const dialogVisible = ref(false)
-    const viewDialogVisible = ref(false)
-    const isEdit = ref(false)
-    const formRef = ref()
-    const viewUser = ref(null)
+    const loading = ref(false);
+    const submitLoading = ref(false);
+    const dialogVisible = ref(false);
+    const viewDialogVisible = ref(false);
+    const isEdit = ref(false);
+    const formRef = ref();
+    const viewUser = ref(null);
 
     // 搜索表单
     const searchForm = reactive({
-      username: '',
-      role: '',
-      status: null
-    })
+      username: "",
+      role: "",
+      status: null,
+    });
 
     // 用户表单
     const form = reactive({
       id: null,
-      username: '',
-      realName: '',
-      email: '',
-      phone: '',
-      role: '',
-      department: '',
-      password: '',
-      confirmPassword: '',
+      username: "",
+      realName: "",
+      email: "",
+      phone: "",
+      role: "",
+      department: "",
+      password: "",
+      confirmPassword: "",
       status: true,
-      remark: ''
-    })
+      remark: "",
+    });
 
     // 分页
     const pagination = reactive({
       page: 1,
       size: 20,
-      total: 0
-    })
+      total: 0,
+    });
 
     // 用户列表数据
-    const userList = ref([])
+    const userList = ref([]);
 
     // 表单验证规则
     const rules = {
       username: [
-        { required: true, message: '请输入用户名', trigger: 'blur' },
-        { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
+        { required: true, message: "请输入用户名", trigger: "blur" },
+        {
+          min: 3,
+          max: 20,
+          message: "用户名长度在 3 到 20 个字符",
+          trigger: "blur",
+        },
       ],
       realName: [
-        { required: true, message: '请输入真实姓名', trigger: 'blur' }
+        { required: true, message: "请输入真实姓名", trigger: "blur" },
       ],
       email: [
-        { required: true, message: '请输入邮箱', trigger: 'blur' },
-        { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+        { required: true, message: "请输入邮箱", trigger: "blur" },
+        { type: "email", message: "请输入正确的邮箱格式", trigger: "blur" },
       ],
       phone: [
-        { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
+        {
+          pattern: /^1[3-9]\d{9}$/,
+          message: "请输入正确的手机号格式",
+          trigger: "blur",
+        },
       ],
-      role: [
-        { required: true, message: '请选择角色', trigger: 'change' }
-      ],
+      role: [{ required: true, message: "请选择角色", trigger: "change" }],
       password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, message: '密码长度至少6位', trigger: 'blur' }
+        { required: true, message: "请输入密码", trigger: "blur" },
+        { min: 6, message: "密码长度至少6位", trigger: "blur" },
       ],
       confirmPassword: [
-        { required: true, message: '请确认密码', trigger: 'blur' },
+        { required: true, message: "请确认密码", trigger: "blur" },
         {
           validator: (rule, value, callback) => {
             if (value !== form.password) {
-              callback(new Error('两次输入的密码不一致'))
+              callback(new Error("两次输入的密码不一致"));
             } else {
-              callback()
+              callback();
             }
           },
-          trigger: 'blur'
-        }
-      ]
-    }
+          trigger: "blur",
+        },
+      ],
+    };
 
     // 计算属性
     const dialogTitle = computed(() => {
-      return isEdit.value ? '编辑用户' : '新增用户'
-    })
+      return isEdit.value ? "编辑用户" : "新增用户";
+    });
 
     // 角色相关方法
     const getRoleText = (role) => {
       const roleMap = {
-        admin: '管理员',
-        doctor: '医生',
-        nurse: '护士',
-        technician: '技师'
-      }
-      return roleMap[role] || role
-    }
+        admin: "管理员",
+        doctor: "医生",
+        nurse: "护士",
+        technician: "技师",
+      };
+      return roleMap[role] || role;
+    };
 
     const getRoleTagType = (role) => {
       const typeMap = {
-        admin: 'danger',
-        doctor: 'primary',
-        nurse: 'success',
-        technician: 'warning'
-      }
-      return typeMap[role] || 'info'
-    }
+        admin: "danger",
+        doctor: "primary",
+        nurse: "success",
+        technician: "warning",
+      };
+      return typeMap[role] || "info";
+    };
 
     // 日期格式化
     const formatDateTime = (dateTime) => {
-      if (!dateTime) return '-'
-      return new Date(dateTime).toLocaleString('zh-CN')
-    }
+      if (!dateTime) return "-";
+      return new Date(dateTime).toLocaleString("zh-CN");
+    };
 
     // 获取用户列表
     const fetchUserList = async () => {
-      loading.value = true
+      loading.value = true;
       try {
         // 构建查询参数
         const queryParams = {
           page: pagination.page,
           limit: pagination.size,
           username: searchForm.username || undefined,
-          status: searchForm.status !== null ? (searchForm.status ? 'active' : 'inactive') : undefined
-        }
+          status:
+            searchForm.status !== null
+              ? searchForm.status
+                ? "active"
+                : "inactive"
+              : undefined,
+        };
 
         // 调用真实API
-        const response = await userService.getUsers(queryParams)
+        const response = await userService.getUsers(queryParams);
 
         // 更新数据
-        userList.value = response.data.users.map(user => ({
+        userList.value = response.data.users.map((user) => ({
           ...user,
           id: user._id,
-          role: user.roleIds && user.roleIds.length > 0 ? 'admin' : 'user', // 简化角色映射
-          department: user.departmentId || '未分配', // 简化科室显示
-          status: user.status === 'active', // 转换为布尔值
+          role: user.roleIds && user.roleIds.length > 0 ? "admin" : "user", // 简化角色映射
+          department: user.departmentId || "未分配", // 简化科室显示
+          status: user.status === "active", // 转换为布尔值
           lastLoginTime: user.lastLoginAt, // 字段映射
-          remark: '' // 后端暂无此字段
-        }))
-        pagination.total = response.data.total
-
+          remark: "", // 后端暂无此字段
+        }));
+        pagination.total = response.data.total;
       } catch (error) {
-        console.error('获取用户列表失败:', error)
-        ElMessage.error('获取用户列表失败')
+        console.error("获取用户列表失败:", error);
+        ElMessage.error("获取用户列表失败");
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    }
+    };
 
     // 搜索
     const handleSearch = () => {
-      pagination.page = 1
-      fetchUserList()
-    }
+      pagination.page = 1;
+      fetchUserList();
+    };
 
     // 重置搜索
     const handleReset = () => {
       Object.assign(searchForm, {
-        username: '',
-        role: '',
-        status: null
-      })
-      pagination.page = 1
-      fetchUserList()
-    }
+        username: "",
+        role: "",
+        status: null,
+      });
+      pagination.page = 1;
+      fetchUserList();
+    };
 
     // 分页变化
     const handleSizeChange = (size) => {
-      pagination.size = size
-      pagination.page = 1
-      fetchUserList()
-    }
+      pagination.size = size;
+      pagination.page = 1;
+      fetchUserList();
+    };
 
     const handlePageChange = (page) => {
-      pagination.page = page
-      fetchUserList()
-    }
+      pagination.page = page;
+      fetchUserList();
+    };
 
     // 新增用户
     const handleAdd = () => {
-      isEdit.value = false
-      dialogVisible.value = true
-      resetForm()
-    }
+      isEdit.value = false;
+      dialogVisible.value = true;
+      resetForm();
+    };
 
     // 编辑用户
     const handleEdit = (row) => {
-      isEdit.value = true
-      dialogVisible.value = true
-      Object.assign(form, { ...row, password: '', confirmPassword: '' })
-    }
+      isEdit.value = true;
+      dialogVisible.value = true;
+      Object.assign(form, { ...row, password: "", confirmPassword: "" });
+    };
 
     // 查看用户详情
     const handleView = (row) => {
-      viewUser.value = row
-      viewDialogVisible.value = true
-    }
+      viewUser.value = row;
+      viewDialogVisible.value = true;
+    };
 
     // 删除用户
     const handleDelete = async (row) => {
       try {
         await ElMessageBox.confirm(
           `确定要删除用户 "${row.username}" 吗？此操作不可恢复！`,
-          '删除确认',
+          "删除确认",
           {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        )
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          },
+        );
 
         // 调用删除API
-        await userService.deleteUser(row._id || row.id)
+        await userService.deleteUser(row._id || row.id);
 
-        ElMessage.success('删除成功')
-        fetchUserList()
+        ElMessage.success("删除成功");
+        fetchUserList();
       } catch (error) {
-        if (error !== 'cancel') {
-          console.error('删除用户失败:', error)
-          ElMessage.error('删除失败')
+        if (error !== "cancel") {
+          console.error("删除用户失败:", error);
+          ElMessage.error("删除失败");
         }
       }
-    }
+    };
 
     // 重置密码
     const handleResetPassword = async (row) => {
       try {
         const { value: newPassword } = await ElMessageBox.prompt(
           `请输入用户 "${row.username}" 的新密码：`,
-          '重置密码',
+          "重置密码",
           {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputType: 'password',
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            inputType: "password",
             inputValidator: (value) => {
               if (!value || value.length < 6) {
-                return '密码长度至少6位'
+                return "密码长度至少6位";
               }
-              return true
-            }
-          }
-        )
+              return true;
+            },
+          },
+        );
 
         // 调用重置密码API
-        await userService.resetPassword(row._id || row.id, newPassword)
+        await userService.resetPassword(row._id || row.id, newPassword);
 
-        ElMessage.success('密码重置成功')
+        ElMessage.success("密码重置成功");
       } catch (error) {
-        if (error !== 'cancel') {
-          console.error('重置密码失败:', error)
-          ElMessage.error('重置密码失败')
+        if (error !== "cancel") {
+          console.error("重置密码失败:", error);
+          ElMessage.error("重置密码失败");
         }
       }
-    }
+    };
 
     // 导出数据
     const handleExport = () => {
-      ElMessage.info('导出功能开发中...')
-    }
+      ElMessage.info("导出功能开发中...");
+    };
 
     // 提交表单
     const handleSubmit = async () => {
-      if (!formRef.value) return
+      if (!formRef.value) return;
 
       try {
-        await formRef.value.validate()
-        submitLoading.value = true
+        await formRef.value.validate();
+        submitLoading.value = true;
 
         if (isEdit.value) {
           // 更新用户
@@ -602,10 +611,10 @@ export default {
             realName: form.realName,
             email: form.email,
             phone: form.phone,
-            status: form.status ? 'active' : 'inactive',
-            isSuperAdmin: form.role === 'admin'
-          }
-          await userService.updateUser(form.id, updateData)
+            status: form.status ? "active" : "inactive",
+            isSuperAdmin: form.role === "admin",
+          };
+          await userService.updateUser(form.id, updateData);
         } else {
           // 创建用户
           const createData = {
@@ -614,51 +623,51 @@ export default {
             realName: form.realName,
             email: form.email,
             phone: form.phone,
-            isSuperAdmin: form.role === 'admin'
-          }
-          await userService.createUser(createData)
+            isSuperAdmin: form.role === "admin",
+          };
+          await userService.createUser(createData);
         }
 
-        ElMessage.success(isEdit.value ? '更新成功' : '创建成功')
-        dialogVisible.value = false
-        fetchUserList()
+        ElMessage.success(isEdit.value ? "更新成功" : "创建成功");
+        dialogVisible.value = false;
+        fetchUserList();
       } catch (error) {
-        console.error('保存用户失败:', error)
-        ElMessage.error('保存失败')
+        console.error("保存用户失败:", error);
+        ElMessage.error("保存失败");
       } finally {
-        submitLoading.value = false
+        submitLoading.value = false;
       }
-    }
+    };
 
     // 对话框关闭
     const handleDialogClose = () => {
-      resetForm()
-    }
+      resetForm();
+    };
 
     // 重置表单
     const resetForm = () => {
       Object.assign(form, {
         id: null,
-        username: '',
-        realName: '',
-        email: '',
-        phone: '',
-        role: '',
-        department: '',
-        password: '',
-        confirmPassword: '',
+        username: "",
+        realName: "",
+        email: "",
+        phone: "",
+        role: "",
+        department: "",
+        password: "",
+        confirmPassword: "",
         status: true,
-        remark: ''
-      })
+        remark: "",
+      });
       if (formRef.value) {
-        formRef.value.clearValidate()
+        formRef.value.clearValidate();
       }
-    }
+    };
 
     // 初始化
     onMounted(() => {
-      fetchUserList()
-    })
+      fetchUserList();
+    });
 
     return {
       loading,
@@ -696,10 +705,10 @@ export default {
       Refresh,
       Edit,
       Delete,
-      Key
-    }
-  }
-}
+      Key,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

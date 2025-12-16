@@ -12,18 +12,20 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import Layout from './components/Layout.vue'
+import { onMounted } from "vue";
+import Layout from "./components/Layout.vue";
 
 onMounted(() => {
-  console.log('🏥 HIS-DEV 管理端已启动')
-  console.log('📋 电子病历系统管理端')
-})
+  console.log("🏥 HIS-DEV 管理端已启动");
+  console.log("📋 电子病历系统管理端");
+});
 </script>
 
 <style lang="scss">
 .his-management-app {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+  font-family:
+    "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

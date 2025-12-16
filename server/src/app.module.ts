@@ -19,7 +19,7 @@ import { HttpExceptionsFilter } from './exceptions/httpExceptions.filter';
 
 import { User } from './models/user.entity';
 import { Patient } from './models/patient.entity';
-import { MedicalRecord } from './models/medicalRecord.entity';
+import { MedicalRecord } from './models/medical-record.entity';
 import { Template } from './models/template.entity';
 import { TemplateMeta } from './models/templateMeta.entity';
 import { TemplateHistory } from './models/templateHistory.entity';

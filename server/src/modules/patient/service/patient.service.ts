@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like, IsNull } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { Patient } from '../../../models/patient.entity';
 import { CreatePatientDto } from '../dto/create-patient.dto';
@@ -259,8 +259,8 @@ export class PatientService {
   async findByPhone(phone: string): Promise<Patient[]> {
     return this.patientRepository.find({
       where: {
-        phone: { $regex: phone, $options: 'i' },
-        deletedAt: { $exists: false }
+        phone: Like(`%${phone}%`),
+        deletedAt: IsNull()
       },
       order: { createdAt: 'DESC' },
     });
@@ -272,8 +272,8 @@ export class PatientService {
   async findByName(name: string): Promise<Patient[]> {
     return this.patientRepository.find({
       where: {
-        name: { $regex: name, $options: 'i' },
-        deletedAt: { $exists: false }
+        name: Like(`%${name}%`),
+        deletedAt: IsNull()
       },
       order: { createdAt: 'DESC' },
     });
