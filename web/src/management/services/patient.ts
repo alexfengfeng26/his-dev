@@ -1,4 +1,4 @@
-import { api } from "../stores/auth";
+import { api } from "../utils/api";
 
 // 患者接口定义
 export interface Patient {
@@ -104,7 +104,7 @@ export const patientService = {
   // 获取患者列表
   async getPatients(query: QueryPatientDto = {}): Promise<PatientListResponse> {
     const response = await api.get("/patients", { params: query });
-    return response.data;
+    return response.data.data;
   },
 
   // 获取患者统计信息

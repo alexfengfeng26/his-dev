@@ -468,7 +468,7 @@ export default {
         const response = await userService.getUsers(queryParams);
 
         // 更新数据
-        userList.value = response.data.users.map((user) => ({
+        userList.value = response.users.map((user) => ({
           ...user,
           id: user._id,
           role: user.roleIds && user.roleIds.length > 0 ? "admin" : "user", // 简化角色映射
@@ -477,7 +477,7 @@ export default {
           lastLoginTime: user.lastLoginAt, // 字段映射
           remark: "", // 后端暂无此字段
         }));
-        pagination.total = response.data.total;
+        pagination.total = response.total;
       } catch (error) {
         console.error("获取用户列表失败:", error);
         ElMessage.error("获取用户列表失败");

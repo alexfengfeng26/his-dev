@@ -1,4 +1,4 @@
-import { api } from "../api";
+import { api } from "../utils/api";
 
 // 病历接口定义
 export interface MedicalRecord {
@@ -115,7 +115,7 @@ export const medicalRecordService = {
     query: QueryMedicalRecordDto = {},
   ): Promise<MedicalRecordListResponse> {
     const response = await api.get("/medical-records", { params: query });
-    return response.data;
+    return response.data.data;
   },
 
   // 获取病历详情

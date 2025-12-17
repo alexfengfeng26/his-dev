@@ -1,4 +1,4 @@
-import { api } from "../api";
+import { api } from "../utils/api";
 
 // 模板接口定义
 export interface Template {
@@ -107,7 +107,7 @@ export const templateService = {
     query: QueryTemplateDto = {},
   ): Promise<TemplateListResponse> {
     const response = await api.get("/templates", { params: query });
-    return response.data;
+    return response.data.data;
   },
 
   // 获取模板详情

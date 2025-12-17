@@ -274,8 +274,8 @@ const loadRecords = async () => {
     });
 
     const response = await medicalRecordService.getRecords(params);
-    recordList.value = response.data.records;
-    pagination.total = response.data.total;
+    recordList.value = response.records;
+    pagination.total = response.total;
   } catch (error) {
     console.error("获取病历列表失败:", error);
     ElMessage.error("获取病历列表失败");

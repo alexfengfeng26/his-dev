@@ -1,4 +1,4 @@
-import { api } from "../stores/auth";
+import { api } from "../utils/api";
 
 // 用户接口定义
 export interface User {
@@ -67,25 +67,25 @@ export const userService = {
   // 获取用户列表
   async getUsers(query: QueryUserDto = {}): Promise<UserListResponse> {
     const response = await api.get("/users", { params: query });
-    return response;
+    return response.data.data;
   },
 
   // 根据ID获取用户
   async getUserById(id: string): Promise<User> {
     const response = await api.get(`/users/${id}`);
-    return response;
+    return response.data.data || response.data;
   },
 
   // 创建用户
   async createUser(data: CreateUserDto): Promise<User> {
     const response = await api.post("/users", data);
-    return response;
+    return response.data.data || response.data;
   },
 
   // 更新用户信息
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     const response = await api.patch(`/users/${id}`, data);
-    return response;
+    return response.data.data || response.data;
   },
 
   // 删除用户

@@ -348,8 +348,8 @@ const loadTemplates = async () => {
     });
 
     const response = await templateService.getTemplates(params);
-    templateList.value = response.data.templates;
-    pagination.total = response.data.total;
+    templateList.value = response.templates;
+    pagination.total = response.total;
   } catch (error) {
     console.error("获取模板列表失败:", error);
     ElMessage.error("获取模板列表失败");

@@ -1,0 +1,72 @@
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
+
+// 创建 axios 实例
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// 请求拦截器
+api.interceptors.request.use(
+  (config) => {
+    // 在发送请求之前做些什么
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  }
+);
+
+// 响应拦截器
+api.interceptors.response.use(
+  (response) => {
+    // 对响应数据做点什么
+    return response;
+  },
+  (error) => {
+    // 对响应错误做点什么
+    if (error.response) {
+      const { status, data } = error.response;
+
+      switch (status) {
+        case 401:
+          // 未授权，清除token并跳转到登录页
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+          ElMessage.error('登录已过期，请重新登录');
+          break;
+        case 403:
+          ElMessage.error('没有权限访问该资源');
+          break;
+        case 404:
+          ElMessage.error('请求的资源不存在');
+          break;
+        case 500:
+          ElMessage.error('服务器内部错误');
+          break;
+        default:
+          ElMessage.error(data?.message || '请求失败');
+      }
+    } else if (error.request) {
+      // 请求已发出但没有收到响应
+      ElMessage.error('网络连接失败，请检查网络设置');
+    } else {
+      // 请求配置错误
+      ElMessage.error('请求配置错误');
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;

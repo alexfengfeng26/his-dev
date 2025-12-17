@@ -1,45 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import axios from "axios";
-
-// 配置axios基础设置
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-  timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// 请求拦截器 - 添加JWT token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-// 响应拦截器 - 处理token过期
-api.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token过期或无效，清除本地存储并跳转到登录页
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  },
-);
+import { api } from "../utils/api";
 
 export const useAuthStore = defineStore("auth", () => {
   // 状态
@@ -64,15 +25,16 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       loading.value = true;
       const response = await api.post("/auth/login", credentials);
+      const authData = response.data;
 
       // 保存token和用户信息
-      token.value = response.token;
-      user.value = response.user;
+      token.value = authData.token;
+      user.value = authData.user;
 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("token", authData.token);
+      localStorage.setItem("user", JSON.stringify(authData.user));
 
-      return response;
+      return authData;
     } catch (error) {
       throw error;
     } finally {
@@ -90,7 +52,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       loading.value = true;
       const response = await api.post("/auth/register", userData);
-      return response;
+      return response.data;
     } catch (error) {
       throw error;
     } finally {
@@ -121,9 +83,10 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       loading.value = true;
       const response = await api.get("/auth/profile");
-      user.value = response.user;
-      localStorage.setItem("user", JSON.stringify(response.user));
-      return response;
+      const userData = response.data;
+      user.value = userData.user;
+      localStorage.setItem("user", JSON.stringify(userData.user));
+      return userData;
     } catch (error) {
       throw error;
     } finally {
@@ -139,7 +102,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       loading.value = true;
       const response = await api.put("/auth/change-password", passwords);
-      return response;
+      return response.data;
     } catch (error) {
       throw error;
     } finally {
@@ -151,9 +114,10 @@ export const useAuthStore = defineStore("auth", () => {
   const refreshToken = async () => {
     try {
       const response = await api.post("/auth/refresh");
-      token.value = response.token;
-      localStorage.setItem("token", response.token);
-      return response;
+      const tokenData = response.data;
+      token.value = tokenData.token;
+      localStorage.setItem("token", tokenData.token);
+      return tokenData;
     } catch (error) {
       // 刷新失败，清除登录状态
       await logout();
